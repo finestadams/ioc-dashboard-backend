@@ -1,3 +1,104 @@
+# IOC Reputation Dashboard — Backend
+
+This folder contains the NestJS backend for the IOC Reputation Dashboard. The backend exposes HTTP APIs for single IOC analysis, bulk analysis, file uploads, analytics, and health checks. It integrates with multiple threat intelligence providers (VirusTotal, AbuseIPDB, URLScan) and persists analysis and rate-limit counters to a MySQL database.
+
+Table of contents
+
+- Prerequisites
+- Environment variables
+- Install and run
+- API endpoints (summary)
+- File uploads
+- Security & secrets
+- Development tips
+
+Prerequisites
+
+- Node.js 18+ and npm 8+
+- MySQL (or compatible) database for TypeORM
+
+Environment variables
+Create `backend/.env` (do NOT commit it). Minimal variables:
+
+```
+# Server
+PORT=3000
+NODE_ENV=development
+FRONTEND_URL=http://localhost:3001
+
+# Database (example for TypeORM connection)
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_USERNAME=root
+DB_PASSWORD=changeme
+DB_DATABASE=ioc_dashboard
+
+# Provider API keys
+VIRUSTOTAL_API_KEY=your_virustotal_key
+ABUSEIPDB_API_KEY=your_abuseipdb_key
+URLSCAN_API_KEY=your_urlscan_key
+
+# Cache and limits
+CACHE_TTL=3600
+```
+
+Install dependencies
+
+```bash
+cd backend
+npm install
+```
+
+Run in development
+
+```bash
+cd backend
+npm run start:dev
+```
+
+Build and run production
+
+```bash
+cd backend
+npm run build
+npm run start:prod
+```
+
+API endpoints (summary)
+
+- POST /api/ioc/analyze — analyze a single IOC (JSON)
+- POST /api/ioc/analyze/bulk — analyze many IOCs (JSON)
+- POST /api/ioc/file/analyze — upload a file for hash extraction and analysis (multipart/form-data; field `file`)
+- POST /api/ioc/file/bulk-upload — CSV/XLSX bulk upload (multipart/form-data; field `file`)
+- GET /api/ioc/detect-type?value=... — auto-detect IOC type
+- GET /api/ioc/health — health status
+- GET /api/ioc/sample-csv — download CSV template
+
+File upload notes
+
+- The backend stores uploaded files temporarily in `./uploads` and attempts to delete them after processing. Ensure the process user can create and remove files in the project directory.
+- Max single file size: 100MB (configured in the controller). Bulk CSV/XLSX max size: 10MB.
+- The server expects the uploaded file to be sent in the `file` form field.
+
+Security & secrets
+
+- Never commit `.env` or secrets. Add `backend/.env` to `.gitignore`.
+- Use `.env.example` to document required variables without keys.
+
+Development tips
+
+- If you encounter an ESM import runtime error (for example, caused by an ESM-only dependency), try restarting the server after ensuring source/compiled files use dynamic imports or adjust the TypeScript module settings.
+- Use the included unit and e2e tests to validate behavior (`npm test`, `npm run test:e2e`).
+
+Troubleshooting
+
+- If uploads fail with permission errors, check filesystem permissions for the `uploads` folder.
+- If you see rate-limit-related errors, confirm provider API keys/quotas and review provider-specific rate-limiting configuration.
+
+License
+
+- MIT
+
 # IOC Reputation Dashboard
 
 A comprehensive web-based Indicators of Compromise (IOC) analysis platform that enables security professionals to analyze the reputation of various IOCs using multiple threat intelligence sources.
@@ -358,12 +459,12 @@ NODE_ENV=development
 1. Create `docker-compose.yml`:
 
 ```yaml
-version: "3.8"
+version: '3.8'
 services:
   backend:
     build: ./backend
     ports:
-      - "3000:3000"
+      - '3000:3000'
     environment:
       - NODE_ENV=production
       - VIRUSTOTAL_API_KEY=${VIRUSTOTAL_API_KEY}
@@ -373,7 +474,7 @@ services:
   frontend:
     build: ./frontend
     ports:
-      - "3001:3000"
+      - '3001:3000'
     environment:
       - NEXT_PUBLIC_API_URL=http://backend:3000
 ```
