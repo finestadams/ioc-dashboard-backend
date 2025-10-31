@@ -142,6 +142,7 @@ export class VirusTotalProvider implements ThreatIntelligenceProvider {
     const suspicious = this.safeParseInt(stats.suspicious);
     const total: number = Object.values(stats).reduce<number>((sum: number, count: unknown) => sum + this.safeParseInt(count), 0);
 
+      
     return {
       provider: this.name,
       verdict: this.determineVerdict(malicious, suspicious, total),

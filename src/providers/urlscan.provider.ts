@@ -117,7 +117,8 @@ export class URLScanProvider implements ThreatIntelligenceProvider {
       });
 
       const results = searchResponse.data.results;
-      console.log('[URLScan] search results for domain:', results);
+    // Log the search results for the domain at debug/info level
+    console.info(`[URLScan] Search results for domain "${domain}":`, JSON.stringify(results, null, 2));
       if (results && results.length > 0) {
         // Analyze the most recent results
         const recentScan = results[0];
@@ -133,7 +134,8 @@ export class URLScanProvider implements ThreatIntelligenceProvider {
   private async getResultFromScan(scan: any): Promise<ThreatIntelligenceResult> {
     try {
         const resultResponse = await this.httpClient.get(`/result/${scan.task.uuid}/`);
-        console.log('[URLScan] result data from scan:', resultResponse.data);
+        // Log the result data for debugging purposes at info level
+        console.info('[URLScan] Result data from scan:', JSON.stringify(resultResponse.data, null, 2));
       return this.parseResult(resultResponse.data);
     } catch (error) {
       // Fall back to basic scan data
@@ -239,6 +241,7 @@ export class URLScanProvider implements ThreatIntelligenceProvider {
     if (detectionCount > 0) return 60;
     return 30;
   }
+
 
   private extractDomainFromUrl(url: string): string {
     try {

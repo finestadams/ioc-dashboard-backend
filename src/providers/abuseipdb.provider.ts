@@ -97,6 +97,7 @@ export class AbuseIPDBProvider implements ThreatIntelligenceProvider {
     return IOCVerdict.UNKNOWN;
   }
 
+    
   private determineCategory(usageType: string): IOCCategory {
     if (!usageType) return IOCCategory.UNKNOWN;
 
