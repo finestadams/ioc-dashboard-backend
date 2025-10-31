@@ -171,7 +171,8 @@ export class VirusTotalProvider implements ThreatIntelligenceProvider {
     }
     
     return IOCVerdict.UNKNOWN;
-  }
+    }
+    
 
   private determineCategory(analysisResults: any): IOCCategory {
       const results = Object.values(analysisResults || {}) as any[];

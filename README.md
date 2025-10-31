@@ -24,7 +24,7 @@ Create `backend/.env` (do NOT commit it). Minimal variables:
 # Server
 PORT=3000
 NODE_ENV=development
-FRONTEND_URL=http://localhost:3001
+FRONTEND_URL=http://localhost:8080
 
 # Database (example for TypeORM connection)
 DB_HOST=127.0.0.1
@@ -203,7 +203,7 @@ npm run dev
 
 ### 5. Access the Dashboard
 
-Open your browser and navigate to `http://localhost:3001`
+Open your browser and navigate to `http://localhost:8080`
 
 ## 🔧 Configuration
 
